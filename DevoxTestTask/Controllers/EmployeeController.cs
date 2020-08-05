@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DevoxTestTask.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,8 +10,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace DevoxTestTask.Controllers
 {
     [Route("api/[controller]")]
-    public class EmployeeController : Controller
+    [ApiController]
+    public class EmployeeController : ControllerBase
     {
+        IEmployeeService employeeService;
+
+        public EmployeeController(IEmployeeService employeeService)
+        {
+            this.employeeService = employeeService;
+        }
+
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -20,9 +29,9 @@ namespace DevoxTestTask.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            return BadRequest();
         }
 
         // POST api/<controller>

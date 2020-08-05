@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DevoxTestTask.DataAccess;
+using DevoxTestTask.Services;
+using DevoxTestTask.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +29,8 @@ namespace DevoxTestTask
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EmployeesActivityContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IProjectsService, ProjectsService>();
 
             services.AddControllers();
         }
