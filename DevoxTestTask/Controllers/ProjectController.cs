@@ -20,7 +20,7 @@ namespace DevoxTestTask.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllProjects()
         {
             var projects = projectsService.GetAllProjects();
             if (projects == null)
@@ -30,10 +30,46 @@ namespace DevoxTestTask.Controllers
             return Ok(projects);
         }
 
-        [HttpPost]
-        public void AddProject(Project project)
+        [HttpGet("{id}")]
+        public IActionResult GetProject(int id)
         {
-            projectsService.AddProject(project);
+            var project = projectsService.GetProject(id);
+            if (project == null)
+            {
+                return NoContent();
+            }
+            return Ok(project);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProject(Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                var createdProjectId = await projectsService.CreateProject(project);
+
+                return Created($"{Request.Path}/{createdProjectId}", project);
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProject(int id, Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                project.Id = id;
+                await projectsService.UpdateProject(project);
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            await projectsService.DeleteProject(id);
+            return Ok();
         }
     }
 }

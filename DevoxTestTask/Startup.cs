@@ -29,8 +29,8 @@ namespace DevoxTestTask
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EmployeesActivityContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IProjectsService, ProjectsService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<IProjectsService, ProjectsService>();
 
             services.AddControllers();
         }

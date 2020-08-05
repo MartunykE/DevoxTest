@@ -9,6 +9,9 @@ namespace DevoxTestTask.Services.Interfaces
     public interface IProjectsService
     {
         IEnumerable<Project> GetAllProjects();
-        void AddProject(Project project);
+        Project GetProject(int id);
+        Task<int> CreateProject(Project project);
+        Task UpdateProject(Project project);
+        Task DeleteProject(int id);
     }
 }

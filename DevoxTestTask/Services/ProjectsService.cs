@@ -13,41 +13,45 @@ using DevoxTestTask.Services.Interfaces;
 
 namespace DevoxTestTask.Services
 {
-    public class ProjectsService:IProjectsService
+    public class ProjectsService : IProjectsService
     {
         private readonly EmployeesActivityContext context;
         public ProjectsService(EmployeesActivityContext context)
         {
             this.context = context;
         }
-
+        public Project GetProject(int id)
+        {
+            Project project = context.Projects.Find(id);
+            return project;
+        }
         public IEnumerable<Project> GetAllProjects()
-        {            
+        {
             var projects = context.Projects;
-
             return projects;
         }
-        public void AddProject(Project project)
+        public async Task<int> CreateProject(Project project)
         {
-           
             context.Projects.Add(project);
+            await context.SaveChangesAsync();
+
+            return project.Id;
         }
 
-        public void UpdateProject(Project project)
+        public async Task UpdateProject(Project project)
         {
+            context.Update(project);
+            await context.SaveChangesAsync();
         }
 
-        public void DeleteProject(int id)
+        public async Task DeleteProject(int id)
         {
+            var project =  context.Projects.Find(id);
+            context.Projects.Remove(project);
 
+            await context.SaveChangesAsync();
         }
 
-        private void SaveChanges()
-        {
-            context.SaveChanges();
-        }
-
-
-
+        
     }
 }

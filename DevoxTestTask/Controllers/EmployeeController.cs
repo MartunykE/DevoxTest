@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DevoxTestTask.DataAccess.Models;
 using DevoxTestTask.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,36 +21,57 @@ namespace DevoxTestTask.Controllers
             this.employeeService = employeeService;
         }
 
-        // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult GetAllEmployees()
         {
-            return new string[] { "value1", "value2" };
+            var employees = employeeService.GetAllEmployees();
+            if (employees == null)
+            {
+                return NoContent();
+            }
+            return Ok(employees);
         }
 
-        // GET api/<controller>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetEmployee(int id)
         {
+            var employee = employeeService.GetEmployee(id);
+            if (employee == null)
+            {
+                return NoContent();
+            }
+            return Ok(employee);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateEmployee(Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                var createdEmployeeId = await employeeService.CreateEmployee(employee);
+
+                return Created($"{Request.Path}/{createdEmployeeId}", employee);
+            }
             return BadRequest();
         }
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> UpdateEmployee(int id, Employee employee)
         {
+            if (ModelState.IsValid)
+            {
+                employee.Id = id;
+                await employeeService.UpdateEmployee(employee);
+                return Ok();
+            }
+            return BadRequest();
         }
 
-        // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteEmployee(int id)
         {
+            await employeeService.DeleteEmployee(id);
+            return Ok();
         }
     }
 }
