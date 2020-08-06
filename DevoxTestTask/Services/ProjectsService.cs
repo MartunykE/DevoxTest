@@ -20,9 +20,9 @@ namespace DevoxTestTask.Services
         {
             this.context = context;
         }
-        public Project GetProject(int id)
+        public Project GetProject(int projectId)
         {
-            Project project = context.Projects.Find(id);
+            Project project = context.Projects.Find(projectId);
             return project;
         }
         public IEnumerable<Project> GetAllProjects()
@@ -44,9 +44,9 @@ namespace DevoxTestTask.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task DeleteProject(int id)
+        public async Task DeleteProject(int projectId)
         {
-            var project =  context.Projects.Find(id);
+            var project =  context.Projects.Find(projectId);
             context.Projects.Remove(project);
 
             await context.SaveChangesAsync();
