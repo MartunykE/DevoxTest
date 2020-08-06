@@ -8,6 +8,10 @@ namespace DevoxTestTask.DataAccess.Models
 {
     public class Employee
     {
+        public Employee()
+        {
+            EmployeeActivites = new List<EmployeeActivity>();
+        }
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }

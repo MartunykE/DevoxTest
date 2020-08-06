@@ -10,6 +10,7 @@ using DevoxTestTask.DataAccess.Models;
 using Newtonsoft.Json;
 using System.IO;
 using DevoxTestTask.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DevoxTestTask.Services
 {
@@ -22,7 +23,11 @@ namespace DevoxTestTask.Services
         }
         public Project GetProject(int projectId)
         {
-            Project project = context.Projects.Find(projectId);
+            Project project = context.Projects
+                .Include(p => p.EmployeeActivites)
+                .ThenInclude(p => p.Employee)
+                .Where(p => p.Id == projectId)
+                .FirstOrDefault();
             return project;
         }
         public IEnumerable<Project> GetAllProjects()
@@ -46,12 +51,12 @@ namespace DevoxTestTask.Services
 
         public async Task DeleteProject(int projectId)
         {
-            var project =  context.Projects.Find(projectId);
+            var project = context.Projects.Find(projectId);
             context.Projects.Remove(project);
 
             await context.SaveChangesAsync();
         }
 
-        
+
     }
 }

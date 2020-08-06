@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DevoxTestTask.DataAccess.Models;
 using DevoxTestTask.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DevoxTestTask.Controllers
 {
@@ -43,10 +40,32 @@ namespace DevoxTestTask.Controllers
             return Ok(employee);
         }
 
-        [HttpGet("{id}/Projects")]
-        public IActionResult GetAllEmpoyeeProjects(int id)
+        [HttpGet("{id}/AllActivities")]
+        public IActionResult GetAllEmpoyeeActivities(int id)
         {
-            var employeeActivities = employeeService.GetEmployeeActivities(id);
+            var employeeActivities = employeeService.GetAllEmployeeActivities(id);
+            if (employeeActivities == null)
+            {
+                return NoContent();
+            }
+            return Ok(employeeActivities);
+        }
+
+        [HttpGet("{id}/ActivitiesPerDate/{date}")]
+        public IActionResult GetEmpoyeeActivitiesPerDate(int id, DateTime date)
+        {
+            var employeeActivities = employeeService.GetEmployeeActivitiyPerDay(id, date);
+            if (employeeActivities == null)
+            {
+                return NoContent();
+            }
+            return Ok(employeeActivities);
+        }
+
+        [HttpGet("{id}/ActivitiesPerWeek/{weekNumber}")]
+        public IActionResult GetEmpoyeeActivitiesPerWeek(int id, int weekNumber)
+        {
+            var employeeActivities = employeeService.GetEmployeeActivitiePerWeek(id, weekNumber);
             if (employeeActivities == null)
             {
                 return NoContent();
@@ -69,7 +88,6 @@ namespace DevoxTestTask.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, Employee employee)
         {
-            //Todo: Handle exception
             if (ModelState.IsValid)
             {
                 employee.Id = id;

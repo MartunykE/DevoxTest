@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,18 +10,15 @@ namespace DevoxTestTask.DataAccess.Models
 {
     public class EmployeeActivity
     {
-        public int Id { get; set; }
-        [Required]
+       // public int Id { get; set; }
         public Employee Employee { get; set; }
-        [Required]
+        public int EmployeeId { get; set; }
         public Role Role { get; set; }
-        [Required]
         public ActivityType ActivityType { get; set; }
-        [Required]
         public Project Project { get; set; }
-        [Required]
+        public int ProjectId { get; set; }
         public DateTime Date { get; set; }
-        [Required]
-        public TimeSpan Hours { get; set; }
+        
+        public double Hours { get; set; }
     }
 }

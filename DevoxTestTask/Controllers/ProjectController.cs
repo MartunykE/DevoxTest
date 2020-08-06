@@ -31,9 +31,9 @@ namespace DevoxTestTask.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProject(int id)
+        public IActionResult GetProject(int projectId)
         {
-            var project = projectsService.GetProject(id);
+            var project = projectsService.GetProject(projectId);
             if (project == null)
             {
                 return NoContent();
@@ -54,11 +54,11 @@ namespace DevoxTestTask.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProject(int id, Project project)
+        public async Task<IActionResult> UpdateProject(int projectId, Project project)
         {
             if (ModelState.IsValid)
             {
-                project.Id = id;
+                project.Id = projectId;
                 await projectsService.UpdateProject(project);
                 return Ok();
             }
@@ -66,9 +66,9 @@ namespace DevoxTestTask.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        public async Task<IActionResult> DeleteProject(int projectId)
         {
-            await projectsService.DeleteProject(id);
+            await projectsService.DeleteProject(projectId);
             return Ok();
         }
     }

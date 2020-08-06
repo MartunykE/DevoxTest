@@ -27,7 +27,16 @@ namespace DevoxTestTask.Services
 
         public Employee GetEmployee(int employeeId)
         {
-            Employee employee = context.Employees.Find(employeeId);
+            var employee = context.Employees
+                .Include(p => p.EmployeeActivites)
+                .ThenInclude(p => p.Project)
+                .Include(p => p.EmployeeActivites)
+                .ThenInclude(p => p.Role)
+                .Include(p => p.EmployeeActivites)
+                .ThenInclude(p => p.ActivityType)
+                .Where(e => e.Id == employeeId)
+                .FirstOrDefault();
+
             return employee;
         }
 
@@ -59,7 +68,15 @@ namespace DevoxTestTask.Services
 
         public void AddActivity(int employeeId, EmployeeActivity employeeActivity)
         {
-            context.Employees.Find(employeeId).EmployeeActivites.Add(employeeActivity);
+            employeeActivity.EmployeeId = employeeActivity.Employee.Id;
+            employeeActivity.ProjectId = employeeActivity.Project.Id;
+            var employee = context.Employees.Find(employeeId);
+            if (employee.EmployeeActivites == null)
+            {
+                employee.EmployeeActivites = new List<EmployeeActivity>();
+            }
+            employee.EmployeeActivites.Add(employeeActivity);
+            context.SaveChanges();
         }
 
         public IEnumerable<EmployeeActivity> GetEmployeeActivitiyPerDay(int employeeId, DateTime date)
@@ -71,12 +88,19 @@ namespace DevoxTestTask.Services
         {
             var firstDayOfWeek = ISOWeek.ToDateTime(DateTime.Now.Year, weekNumber, DayOfWeek.Monday);
             var lastDayOfWeek = ISOWeek.ToDateTime(DateTime.Now.Year, weekNumber, DayOfWeek.Sunday);
-
-            return GetEmployeeActivitiyPerPeriod(employeeId, a => a.Date.Date >= firstDayOfWeek.Date && a.Date.Date <= lastDayOfWeek.Date.Date);
+            var r = GetEmployeeActivitiyPerPeriod(employeeId, a => a.Date.Date >= firstDayOfWeek.Date && a.Date.Date <= lastDayOfWeek.Date.Date);
+            return r;
         }
         private IEnumerable<EmployeeActivity> GetEmployeeActivitiyPerPeriod(int employeeId, Func<EmployeeActivity, bool> periodCondition)
         {
-            return context.Employees.Find(employeeId).EmployeeActivites.Where(periodCondition);
+            var activity = context.EmployeeActivity
+                .Include(a => a.Role)
+                .Include(a => a.ActivityType)
+                .Include(a => a.Project)
+                .Where(e => e.EmployeeId == employeeId)
+                .Where(periodCondition).ToList();
+
+            return activity;
         }
 
     }
